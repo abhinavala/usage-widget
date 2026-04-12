@@ -1,0 +1,11 @@
+{
+  "name": "mac-claude-usage-error-handling",
+  "private": true,
+  "scripts": {
+    "test": "vitest run"
+  },
+  "devDependencies": {
+    "typescript": "^6.0.2",
+    "vitest": "^4.1.4"
+  }
+}
