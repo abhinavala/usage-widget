@@ -1,4 +1,4 @@
-import { UsageData } from '../.worktrees/cmnuzrzro005l11bqxcqtgn4v/src/types/usage';
+import { UsageData } from '../src/types/usage';
 import { FetchError } from './CLICommandRunner.swift';
 
 export interface RawCLIResponse {

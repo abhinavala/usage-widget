@@ -1,5 +1,5 @@
-import { UsageData } from '../.worktrees/cmnuzrzro005l11bqxcqtgn4v/src/types/usage';
-import { UsageFetcher, FetcherConfig } from '../.worktrees/cmnuzrzro005l11bqxcqtgn4v/src/types/fetcher';
+import { UsageData } from '../src/types/usage';
+import { UsageFetcher, FetcherConfig } from '../src/types/fetcher';
 import { executeCLICommand, validateCLIToolsAvailable, FetchError } from './CLICommandRunner.swift';
 import { parseCLIOutput } from './CLIOutputParser.swift';
 

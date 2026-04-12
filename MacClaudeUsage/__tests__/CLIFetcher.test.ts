@@ -1,30 +1,7 @@
-import { describe, it, expect, beforeEach, vi } from 'vitest';
-
-// Types matching integration contracts
-interface UsageData {
-  tokensUsed: number;
-  tokensLimit: number;
-  messagesUsed: number;
-  messagesLimit: number;
-  resetTime: Date;
-  lastUpdated: Date;
-}
-
-type FetcherType = 'webapi' | 'cli';
-
-class FetchError extends Error {
-  code: string;
-  fetcherType: FetcherType;
-  retryable: boolean;
-
-  constructor(message: string, code: string, fetcherType: FetcherType, retryable: boolean = false) {
-    super(message);
-    this.name = 'FetchError';
-    this.code = code;
-    this.fetcherType = fetcherType;
-    this.retryable = retryable;
-  }
-}
+import { describe, it, expect } from 'vitest';
+import { UsageData } from '../../src/types/usage';
+import { FetcherType } from '../../src/types/fetcher';
+import { FetchError } from '../../src/types/errors';
 
 // Inline implementations for testing (mirrors CLICommandRunner + CLIOutputParser + CLIFetcher logic)
 

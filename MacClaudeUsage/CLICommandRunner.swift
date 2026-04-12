@@ -1,4 +1,4 @@
-import { FetcherType } from '../.worktrees/cmnuzrzro005l11bqxcqtgn4v/src/types/fetcher';
+import { FetcherType } from '../src/types/fetcher';
 
 export class FetchError extends Error {
   code: string;
