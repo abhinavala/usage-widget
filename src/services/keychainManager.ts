@@ -127,6 +127,10 @@ export class KeychainManager {
     }
   }
 
+  async clearSession(): Promise<void> {
+    await this.deleteSession();
+  }
+
   async isSessionValid(): Promise<boolean> {
     const session = await this.retrieveSession();
     if (!session || !session.isValid) return false;
