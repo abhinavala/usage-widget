@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { CloudSyncManager, ICloudStore } from '../../services/CloudSyncManager';
-import { SyncStatus, SyncError, UsageData } from '../../types/sync';
+import { SyncStatusEnum, SyncError, UsageData } from '../../types/sync';
 
 function createMockStore(overrides: Partial<ICloudStore> = {}): ICloudStore {
   return {
@@ -39,7 +39,7 @@ describe('CloudSyncManager', () => {
 
       const status = await manager.writeUsageData(data);
 
-      expect(status).toBe(SyncStatus.SUCCESS);
+      expect(status).toBe(SyncStatusEnum.SUCCESS);
       expect(store.set).toHaveBeenCalledWith(
         'com.claudeusage.syncData',
         expect.any(String)

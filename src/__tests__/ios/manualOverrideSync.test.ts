@@ -1,7 +1,7 @@
 import { describe, it, expect, beforeEach } from 'vitest';
 import { ManualOverrideService, ManualOverride, isOverrideExpired } from '../../ios/ManualOverrideService';
 import { CloudSyncManager, ICloudStore } from '../../services/CloudSyncManager';
-import { SyncStatus, UsageData } from '../../types/sync';
+import { SyncStatusEnum, UsageData } from '../../types/sync';
 
 function createMockStore(available = true): ICloudStore {
   const storage = new Map<string, string>();
@@ -59,7 +59,7 @@ describe('ManualOverrideService', () => {
       const override = createTestOverride();
       const status = await service.saveManualOverride(override);
 
-      expect(status).toBe(SyncStatus.SUCCESS);
+      expect(status).toBe(SyncStatusEnum.SUCCESS);
 
       const appState = await service.loadAppState();
       expect(appState.manualOverride).toBeDefined();
