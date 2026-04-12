@@ -6,6 +6,12 @@ export interface UsageFetcher {
   fetchUsage(): Promise<UsageData>;
 }
 
+export interface FetcherConfig {
+  type: FetcherType;
+  timeout: number;
+  retryAttempts: number;
+}
+
 export interface FetchResult {
   data: UsageData;
   success: boolean;
