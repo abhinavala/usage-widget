@@ -1,11 +1,10 @@
 {
-  "name": "wkwebview-login-interface",
+  "name": "claude-usage-ios-app",
   "private": true,
   "scripts": {
     "test": "vitest run"
   },
   "devDependencies": {
-    "electron": "^35.0.0",
     "typescript": "^6.0.2",
     "vitest": "^4.1.4"
   }
