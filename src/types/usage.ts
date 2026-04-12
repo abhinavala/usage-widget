@@ -1,3 +1,5 @@
+import { ProgressBarState } from './progress';
+
 export interface UsageData {
   inputTokens: number;
   outputTokens: number;
@@ -53,3 +55,5 @@ export function applyManualOverride(
 ): UsageData {
   return { ...data, manualOverride: override };
 }
+
+export interface UsageProgress { usage: UsageData; progressBar: ProgressBarState; } // src/types/usage.ts
