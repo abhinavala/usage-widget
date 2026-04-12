@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach, vi } from 'vitest';
+import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import { LoginTrigger } from '../../services/loginTrigger';
 import { LoginState, LoginError } from '../../types/auth';
 
@@ -32,12 +32,18 @@ describe('LoginTrigger', () => {
   let mockAuthManager: ReturnType<typeof createMockAuthManager>;
 
   beforeEach(() => {
+    vi.useFakeTimers();
     mockKeychain = createMockKeychain();
     mockAuthManager = createMockAuthManager();
     trigger = new LoginTrigger(
       mockKeychain as any,
       mockAuthManager as any,
     );
+  });
+
+  afterEach(() => {
+    trigger.stopPeriodicValidation();
+    vi.useRealTimers();
   });
 
   describe('checkAuthenticationStatus', () => {
@@ -297,6 +303,104 @@ describe('LoginTrigger', () => {
       const triggered = await trigger.manualLoginTrigger();
 
       expect(triggered).toBe(true);
+      expect(mockAuthManager.startLoginFlow).toHaveBeenCalled();
+    });
+  });
+
+  describe('schedulePeriodicValidation', () => {
+    it('triggers validation at the configured interval', async () => {
+      mockKeychain.retrieveSession.mockResolvedValue(null);
+
+      trigger.schedulePeriodicValidation();
+
+      // Advance past the default 5-minute interval
+      await vi.advanceTimersByTimeAsync(5 * 60 * 1000);
+
+      expect(mockAuthManager.startLoginFlow).toHaveBeenCalled();
+    });
+
+    it('does not trigger login when credentials are valid', async () => {
+      mockKeychain.retrieveSession.mockResolvedValue({
+        sessionData: JSON.stringify({ cookies: 'c', sessionId: 's1', expiresAt: Date.now() + 900_000 }),
+        timestamp: Date.now(),
+        isValid: true,
+      });
+      mockKeychain.isSessionValid.mockResolvedValue(true);
+
+      trigger.schedulePeriodicValidation();
+
+      await vi.advanceTimersByTimeAsync(5 * 60 * 1000);
+
+      expect(mockAuthManager.startLoginFlow).not.toHaveBeenCalled();
+    });
+
+    it('replaces existing timer when called again', async () => {
+      mockKeychain.retrieveSession.mockResolvedValue(null);
+
+      trigger.schedulePeriodicValidation();
+      trigger.schedulePeriodicValidation();
+
+      await vi.advanceTimersByTimeAsync(5 * 60 * 1000);
+
+      // Should only fire once (not twice from two timers)
+      expect(mockAuthManager.startLoginFlow).toHaveBeenCalledTimes(1);
+    });
+
+    it('handles validation errors without throwing', async () => {
+      mockKeychain.retrieveSession.mockRejectedValue(new Error('Keychain locked'));
+
+      trigger.schedulePeriodicValidation();
+
+      // Should not throw
+      await vi.advanceTimersByTimeAsync(5 * 60 * 1000);
+    });
+
+    it('can be stopped with stopPeriodicValidation', async () => {
+      mockKeychain.retrieveSession.mockResolvedValue(null);
+
+      trigger.schedulePeriodicValidation();
+      trigger.stopPeriodicValidation();
+
+      await vi.advanceTimersByTimeAsync(5 * 60 * 1000);
+
+      expect(mockAuthManager.startLoginFlow).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('handleStartupAuthentication', () => {
+    it('detects first-run, triggers login, and starts periodic validation', async () => {
+      mockKeychain.retrieveSession.mockResolvedValue(null);
+
+      await trigger.handleStartupAuthentication();
+
+      const status = trigger.getStatus();
+      expect(status.isFirstRun).toBe(true);
+      expect(mockAuthManager.startLoginFlow).toHaveBeenCalled();
+
+      // Verify periodic validation was started by advancing the timer
+      mockAuthManager.startLoginFlow.mockClear();
+      mockKeychain.retrieveSession.mockResolvedValue(null);
+
+      await vi.advanceTimersByTimeAsync(5 * 60 * 1000);
+
+      expect(mockAuthManager.startLoginFlow).toHaveBeenCalled();
+    });
+
+    it('starts periodic validation even if startup login fails', async () => {
+      mockKeychain.retrieveSession.mockResolvedValue(null);
+      mockAuthManager.startLoginFlow.mockRejectedValue(
+        new LoginError('No display available', 'webview_failed'),
+      );
+
+      await trigger.handleStartupAuthentication();
+
+      // Periodic validation should still be running
+      mockAuthManager.startLoginFlow.mockClear();
+      mockAuthManager.startLoginFlow.mockResolvedValue({ success: true });
+      mockKeychain.retrieveSession.mockResolvedValue(null);
+
+      await vi.advanceTimersByTimeAsync(5 * 60 * 1000);
+
       expect(mockAuthManager.startLoginFlow).toHaveBeenCalled();
     });
   });

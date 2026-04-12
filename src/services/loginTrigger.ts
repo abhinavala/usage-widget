@@ -29,6 +29,7 @@ export class LoginTrigger {
   private isFirstRun: boolean = true;
   private lastValidationTime: number | null = null;
   private loginInProgress: boolean = false;
+  private validationTimer: ReturnType<typeof setInterval> | null = null;
 
   constructor(
     keychainManager: KeychainManager,
@@ -147,6 +148,47 @@ export class LoginTrigger {
         // Startup login failure is non-fatal in LaunchAgent context.
         // The periodic fetch timer will retry.
       }
+    }
+  }
+
+  /**
+   * Full startup handler: detects first-run, triggers login if needed,
+   * and starts periodic credential validation.
+   * Designed for the LaunchAgent context where UI presentation requires special handling.
+   */
+  async handleStartupAuthentication(): Promise<void> {
+    await this.onAppStartup();
+    this.schedulePeriodicValidation();
+  }
+
+  /**
+   * Start a periodic timer that validates credentials at the configured interval.
+   * If credentials are found to be invalid/expired, triggers re-authentication.
+   * Calling this again replaces any existing scheduled validation.
+   */
+  schedulePeriodicValidation(): void {
+    this.stopPeriodicValidation();
+
+    this.validationTimer = setInterval(async () => {
+      try {
+        const status = await this.checkAuthenticationStatus();
+        if (status !== LoginState.SUCCESS && status !== LoginState.LOADING) {
+          await this.triggerLoginIfNeeded();
+        }
+        this.lastValidationTime = Date.now();
+      } catch {
+        // Periodic validation failure is non-fatal; next tick will retry.
+      }
+    }, this.config.validationIntervalMs);
+  }
+
+  /**
+   * Stop periodic credential validation.
+   */
+  stopPeriodicValidation(): void {
+    if (this.validationTimer !== null) {
+      clearInterval(this.validationTimer);
+      this.validationTimer = null;
     }
   }
 
