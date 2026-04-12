@@ -1,5 +1,5 @@
 {
-  "name": "claude-usage-ios-app",
+  "name": "icloud-sync-infrastructure",
   "private": true,
   "scripts": {
     "test": "vitest run"
