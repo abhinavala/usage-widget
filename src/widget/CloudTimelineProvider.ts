@@ -4,24 +4,13 @@ import {
   CloudSyncData,
   SyncError,
 } from '../types/sync';
+import {
+  WidgetSize,
+  WidgetConfiguration,
+  TimelineEntry,
+} from '../types/widget';
 
-export enum WidgetSize {
-  SMALL = 'small',
-  MEDIUM = 'medium',
-}
-
-export interface WidgetConfiguration {
-  showTokens: boolean;
-  showRequests: boolean;
-  size: WidgetSize;
-  refreshInterval: number;
-}
-
-export interface TimelineEntry {
-  date: Date;
-  usageData: UsageData;
-  configuration: WidgetConfiguration;
-}
+export { WidgetSize, WidgetConfiguration, TimelineEntry };
 
 export interface Timeline<T> {
   entries: T[];
