@@ -1,22 +1,7 @@
 import { describe, it, expect, beforeEach } from 'vitest';
 import { readFileSync } from 'fs';
 import { resolve } from 'path';
-
-// Integration contract types
-interface LaunchAgentConfig {
-  keepAlive: boolean;
-  runAtLoad: boolean;
-  startInterval: number;
-}
-
-type AppVisibility = 'visible' | 'hidden' | 'background';
-
-interface SystemStatus {
-  isRunning: boolean;
-  lastFetchTime?: Date;
-  nextFetchTime?: Date;
-  visibility: AppVisibility;
-}
+import type { LaunchAgentConfig, AppVisibility, SystemStatus } from '../../src/types/system';
 
 const MAC_APP_DIR = resolve(__dirname, '..');
 

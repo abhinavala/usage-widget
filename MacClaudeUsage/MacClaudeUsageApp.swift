@@ -21,7 +21,7 @@ struct MacClaudeUsageApp {
 
         // Set up launch agent for auto-start
         let launchAgentManager = LaunchAgentManager()
-        launchAgentManager.installLaunchAgentIfNeeded()
+        launchAgentManager.setupLaunchAgent()
 
         // Initialize system status
         let statusManager = SystemStatusManager.shared

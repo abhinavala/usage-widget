@@ -30,6 +30,12 @@ class LaunchAgentManager {
         self.config = config
     }
 
+    /// Sets up the LaunchAgent with the current configuration.
+    /// Creates and installs the plist if it does not already exist.
+    func setupLaunchAgent() {
+        installLaunchAgentIfNeeded()
+    }
+
     /// Installs the LaunchAgent plist if it does not already exist.
     func installLaunchAgentIfNeeded() {
         guard !FileManager.default.fileExists(atPath: launchAgentURL.path) else {
