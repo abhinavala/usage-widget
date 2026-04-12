@@ -1,3 +1,5 @@
+import type { ManualOverride } from './usage';
+
 export interface UsageData {
   tokensUsed: number;
   tokensLimit: number;
@@ -19,11 +21,19 @@ export interface CloudSyncData {
   deviceId: string;
 }
 
-export enum SyncStatus {
+export enum SyncStatusEnum {
   SYNCING = 'syncing',
   SUCCESS = 'success',
   ERROR = 'error',
   STALE = 'stale',
+}
+
+export type SyncStatus = 'synced' | 'syncing' | 'error' | 'offline';
+
+export interface SyncData {
+  usage?: UsageData;
+  manualOverride?: ManualOverride;
+  lastSync: Date;
 }
 
 export class SyncError extends Error {

@@ -2,7 +2,7 @@ import {
   UsageData,
   SyncState,
   CloudSyncData,
-  SyncStatus,
+  SyncStatusEnum,
   SyncError,
 } from '../types/sync';
 
@@ -30,7 +30,7 @@ export class CloudSyncManager {
     };
   }
 
-  async writeUsageData(data: UsageData): Promise<SyncStatus> {
+  async writeUsageData(data: UsageData): Promise<SyncStatusEnum> {
     if (!this.store.isAvailable()) {
       this.lastSyncState = {
         ...this.lastSyncState,
@@ -74,7 +74,7 @@ export class CloudSyncManager {
       syncError: undefined,
     };
 
-    return SyncStatus.SUCCESS;
+    return SyncStatusEnum.SUCCESS;
   }
 
   async readUsageData(): Promise<CloudSyncData | null> {
