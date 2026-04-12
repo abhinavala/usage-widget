@@ -1,11 +1,4 @@
-export interface UsageData {
-  tokensUsed: number;
-  tokensLimit: number;
-  messagesUsed: number;
-  messagesLimit: number;
-  resetTime: Date;
-  lastUpdated: Date;
-}
+export type { UsageData } from './usage';
 
 export interface SyncState {
   lastSyncTime: Date;
