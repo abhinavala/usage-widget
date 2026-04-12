@@ -7,6 +7,25 @@ export enum SyncError {
   NETWORK_ERROR = 'NETWORK_ERROR',
 }
 
-export class ProgressConfigurationError extends Error { code: string; threshold?: ProgressThreshold; } // src/types/errors.ts
+export class ProgressConfigurationError extends Error { // src/types/errors.ts
+  code: string;
+  threshold?: ProgressThreshold;
 
-export class ColorValidationError extends Error { code: string; color: string; } // src/types/errors.ts
+  constructor(message: string) {
+    super(message);
+    this.name = 'ProgressConfigurationError';
+    this.code = '';
+  }
+}
+
+export class ColorValidationError extends Error { // src/types/errors.ts
+  code: string;
+  color: string;
+
+  constructor(message: string) {
+    super(message);
+    this.name = 'ColorValidationError';
+    this.code = '';
+    this.color = '';
+  }
+}
