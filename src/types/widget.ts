@@ -1,4 +1,5 @@
 import { UsageData } from './sync';
+import { ProgressBarConfig, ProgressBarState } from './progress';
 
 export enum WidgetSize {
   SMALL = 'small',
@@ -11,6 +12,8 @@ export interface WidgetConfiguration {
   size: WidgetSize;
   showResetTime: boolean;
   colorTheme: ColorTheme;
+  showProgressBars: boolean;
+  progressConfig: ProgressBarConfig;
 }
 
 export interface TimelineWidgetConfiguration {
@@ -37,3 +40,5 @@ export interface TimelineConfiguration {
   maxEntries: number;
   staleThreshold: number;
 }
+
+export interface WidgetData { usage: UsageData; progress: ProgressBarState; size: WidgetSize; config: WidgetConfiguration; } // src/types/widget.ts
