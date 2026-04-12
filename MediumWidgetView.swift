@@ -185,6 +185,12 @@ struct MediumWidgetView: View {
 
 // MARK: - Pure Functions
 
+func formatUsagePercentage(used: Int, limit: Int) -> String {
+    guard limit > 0 else { return "0%" }
+    let percentage = min(Double(used) / Double(limit) * 100, 999)
+    return "\(Int(percentage))%"
+}
+
 func progressColor(percentage: Double, config: ProgressBarConfiguration) -> Color {
     if percentage >= config.highThreshold {
         return config.colors.critical

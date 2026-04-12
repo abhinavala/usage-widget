@@ -1,43 +1,8 @@
 import { describe, it, expect } from 'vitest';
 import { UsageData } from '../../types/usage';
+import { ProgressBarConfiguration, ProgressColors } from '../../types/ui';
+import { TimelineConfiguration, WidgetSize, WidgetEntry, WidgetConfiguration } from '../../types/widget';
 import { calculateUsagePercentages } from '../../utils/usageCalculations';
-
-// --- Integration contract types ---
-
-interface ProgressBarConfiguration {
-  lowThreshold: number;
-  mediumThreshold: number;
-  highThreshold: number;
-  colors: ProgressColors;
-}
-
-interface ProgressColors {
-  low: string;
-  medium: string;
-  high: string;
-  critical: string;
-}
-
-interface TimelineConfiguration {
-  refreshInterval: number;
-  maxEntries: number;
-  staleThreshold: number;
-}
-
-enum WidgetSize {
-  Small = 'small',
-  Medium = 'medium',
-}
-
-interface WidgetConfiguration {
-  size: WidgetSize;
-}
-
-interface WidgetEntry {
-  date: Date;
-  usageData: UsageData | null;
-  configuration: WidgetConfiguration;
-}
 
 // --- Widget logic functions (mirroring MediumWidgetView.swift helpers) ---
 
