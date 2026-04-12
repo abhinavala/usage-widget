@@ -57,25 +57,31 @@ struct WidgetStyleProvider {
 
     // MARK: - Spacing
 
-    var contentPadding: CGFloat {
+    struct SpacingValues {
+        let contentPadding: CGFloat
+        let itemSpacing: CGFloat
+        let sectionSpacing: CGFloat
+    }
+
+    func spacingForSize() -> SpacingValues {
         switch size {
-        case .small: return 10
-        case .medium: return 12
+        case .small:
+            return SpacingValues(contentPadding: 10, itemSpacing: 4, sectionSpacing: 6)
+        case .medium:
+            return SpacingValues(contentPadding: 12, itemSpacing: 8, sectionSpacing: 16)
         }
+    }
+
+    var contentPadding: CGFloat {
+        spacingForSize().contentPadding
     }
 
     var itemSpacing: CGFloat {
-        switch size {
-        case .small: return 4
-        case .medium: return 8
-        }
+        spacingForSize().itemSpacing
     }
 
     var sectionSpacing: CGFloat {
-        switch size {
-        case .small: return 6
-        case .medium: return 16
-        }
+        spacingForSize().sectionSpacing
     }
 
     // MARK: - Progress Bar

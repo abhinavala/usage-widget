@@ -47,16 +47,28 @@ function progressBarCornerRadius(widgetSize: WidgetSize): number {
   return widgetSize === WidgetSize.Small ? 2 : 3;
 }
 
+interface SpacingValues {
+  contentPadding: number;
+  itemSpacing: number;
+  sectionSpacing: number;
+}
+
+function spacingForSize(widgetSize: WidgetSize): SpacingValues {
+  return widgetSize === WidgetSize.Small
+    ? { contentPadding: 10, itemSpacing: 4, sectionSpacing: 6 }
+    : { contentPadding: 12, itemSpacing: 8, sectionSpacing: 16 };
+}
+
 function contentPadding(widgetSize: WidgetSize): number {
-  return widgetSize === WidgetSize.Small ? 10 : 12;
+  return spacingForSize(widgetSize).contentPadding;
 }
 
 function itemSpacing(widgetSize: WidgetSize): number {
-  return widgetSize === WidgetSize.Small ? 4 : 8;
+  return spacingForSize(widgetSize).itemSpacing;
 }
 
 function sectionSpacing(widgetSize: WidgetSize): number {
-  return widgetSize === WidgetSize.Small ? 6 : 16;
+  return spacingForSize(widgetSize).sectionSpacing;
 }
 
 function colorsForTheme(theme: ColorTheme): ProgressColors {
@@ -204,6 +216,30 @@ describe('WidgetStyleProvider', () => {
       expect(small).toBeGreaterThan(0);
       expect(medium).toBeGreaterThan(0);
       expect(small).toBeLessThan(medium);
+    });
+  });
+
+  describe('spacingForSize', () => {
+    it('returns all spacing values bundled for small widget', () => {
+      const spacing = spacingForSize(WidgetSize.Small);
+      expect(spacing.contentPadding).toBe(10);
+      expect(spacing.itemSpacing).toBe(4);
+      expect(spacing.sectionSpacing).toBe(6);
+    });
+
+    it('returns all spacing values bundled for medium widget', () => {
+      const spacing = spacingForSize(WidgetSize.Medium);
+      expect(spacing.contentPadding).toBe(12);
+      expect(spacing.itemSpacing).toBe(8);
+      expect(spacing.sectionSpacing).toBe(16);
+    });
+
+    it('small spacing values are all less than medium', () => {
+      const small = spacingForSize(WidgetSize.Small);
+      const medium = spacingForSize(WidgetSize.Medium);
+      expect(small.contentPadding).toBeLessThan(medium.contentPadding);
+      expect(small.itemSpacing).toBeLessThan(medium.itemSpacing);
+      expect(small.sectionSpacing).toBeLessThan(medium.sectionSpacing);
     });
   });
 
