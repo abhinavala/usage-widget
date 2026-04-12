@@ -1,27 +1,14 @@
 import {
   UsageData,
-  SyncState,
-  CloudSyncData,
   SyncStatus,
   SyncError,
 } from '../types/sync';
+import { ManualOverride } from '../types/override';
+import { AppState } from '../types/app';
 import { CloudSyncManager } from '../services/CloudSyncManager';
 
-export interface ManualOverride {
-  tokensUsed?: number;
-  tokensLimit?: number;
-  requestsUsed?: number;
-  requestsLimit?: number;
-  isActive: boolean;
-  expiresAt: Date;
-}
-
-export interface AppState {
-  usageData: UsageData;
-  syncState: SyncState;
-  manualOverride?: ManualOverride;
-  lastFetchTime: Date;
-}
+export type { ManualOverride } from '../types/override';
+export type { AppState } from '../types/app';
 
 const OVERRIDE_STORAGE_KEY = 'com.claudeusage.manualOverride';
 const DEFAULT_OVERRIDE_DURATION_MS = 60 * 60 * 1000; // 1 hour
