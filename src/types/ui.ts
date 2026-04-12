@@ -11,3 +11,10 @@ export interface ProgressBarConfig {
   threshold2: number;
   colors: ProgressColors;
 }
+
+export interface ProgressBarConfiguration {
+  lowThreshold: number;
+  mediumThreshold: number;
+  highThreshold: number;
+  colors: ProgressColors;
+}

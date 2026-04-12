@@ -20,8 +20,20 @@ export interface TimelineWidgetConfiguration {
   refreshInterval: number;
 }
 
+export interface WidgetEntry {
+  date: Date;
+  usageData: UsageData | null;
+  configuration: WidgetConfiguration;
+}
+
 export interface TimelineEntry {
   date: Date;
   usageData: UsageData;
   configuration: TimelineWidgetConfiguration;
+}
+
+export interface TimelineConfiguration {
+  refreshInterval: number;
+  maxEntries: number;
+  staleThreshold: number;
 }
