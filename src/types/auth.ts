@@ -5,3 +5,9 @@ export interface AuthCredentials {
 }
 
 export type AuthState = 'authenticated' | 'unauthenticated' | 'expired' | 'invalid';
+
+export interface AuthResult {
+  state: AuthState;
+  credentials?: AuthCredentials;
+  error?: string;
+}
