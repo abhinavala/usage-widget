@@ -170,6 +170,38 @@ class ICloudSyncManager {
         )
     }
 
+    /// Reads synced data from iCloud Key-Value Store.
+    /// Alias for `readSyncData()` matching the integration contract.
+    /// Falls back to local cache if iCloud data is unavailable.
+    /// - Returns: A tuple of the data (if available) and a `SyncResult`.
+    func readSyncedData() -> (data: [String: Any]?, result: SyncResult) {
+        return readSyncData()
+    }
+
+    /// Resolves a sync conflict between local and remote data.
+    /// Delegates to the `SyncConflictResolver`.
+    /// - Parameters:
+    ///   - local: The local sync data dictionary.
+    ///   - remote: The remote sync data dictionary.
+    /// - Returns: The resolved sync data dictionary.
+    func resolveSyncConflict(local: [String: Any], remote: [String: Any]) -> [String: Any] {
+        return conflictResolver.resolve(local: local, remote: remote)
+    }
+
+    /// Validates sync data for correctness and integrity.
+    /// Delegates to `SyncDataValidator`.
+    /// - Parameter data: The dictionary representation of SyncData.
+    /// - Returns: `true` if the data is valid, `false` otherwise.
+    func validateSyncData(_ data: [String: Any]) -> Bool {
+        return SyncDataValidator.validate(data)
+    }
+
+    /// Registers a callback to be notified when remote sync data changes.
+    /// - Parameter handler: A closure that receives the updated data dictionary.
+    func registerSyncCallback(_ handler: @escaping SyncChangeHandler) {
+        changeHandlers.append(handler)
+    }
+
     /// Registers a handler to be called when remote sync data changes.
     /// - Parameter handler: A closure that receives the updated data dictionary.
     func onSyncChange(_ handler: @escaping SyncChangeHandler) {

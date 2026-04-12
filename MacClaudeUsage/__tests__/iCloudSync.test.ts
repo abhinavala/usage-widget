@@ -78,6 +78,7 @@ describe('iCloudSync', () => {
     it('iCloudSync.swift supports read, write, and delete operations', () => {
       expect(iCloudSyncSource).toContain('func syncUsageData');
       expect(iCloudSyncSource).toContain('func readSyncData');
+      expect(iCloudSyncSource).toContain('func readSyncedData');
       expect(iCloudSyncSource).toContain('func deleteSyncData');
     });
 
@@ -214,10 +215,25 @@ describe('iCloudSync', () => {
   });
 
   describe('sync callbacks and error handling', () => {
-    it('iCloudSync.swift registers change handlers', () => {
+    it('iCloudSync.swift registers change handlers via registerSyncCallback', () => {
+      expect(iCloudSyncSource).toContain('func registerSyncCallback');
       expect(iCloudSyncSource).toContain('onSyncChange');
       expect(iCloudSyncSource).toContain('SyncChangeHandler');
       expect(iCloudSyncSource).toContain('changeHandlers');
+    });
+
+    it('iCloudSync.swift exposes resolveSyncConflict method', () => {
+      expect(iCloudSyncSource).toContain('func resolveSyncConflict');
+      expect(iCloudSyncSource).toContain('conflictResolver.resolve');
+    });
+
+    it('iCloudSync.swift exposes validateSyncData method', () => {
+      expect(iCloudSyncSource).toContain('func validateSyncData');
+      expect(iCloudSyncSource).toContain('SyncDataValidator.validate');
+    });
+
+    it('iCloudSync.swift exposes readSyncedData method', () => {
+      expect(iCloudSyncSource).toContain('func readSyncedData');
     });
 
     it('iCloudSync.swift observes iCloud external change notifications', () => {
