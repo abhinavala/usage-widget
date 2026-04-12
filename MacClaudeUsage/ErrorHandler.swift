@@ -136,4 +136,31 @@ export class ErrorHandler {
   private async handleNetworkError(error: Error, context: string): Promise<RecoveryResult> {
     return this.recoveryActions.gracefulDegradation(context, `Network error: ${error.message}`);
   }
+
+  async triggerRecoveryAction(error: Error, context: string): Promise<RecoveryResult> {
+    const category = this.categorizeError(error);
+
+    switch (category) {
+      case 'authentication':
+        return this.recoveryActions.triggerReauth();
+      case 'fetch':
+        return this.recoveryActions.handlePersistentWebAPIFailure();
+      case 'sync':
+        return this.recoveryActions.retrySync();
+      case 'network':
+      case 'system':
+        return this.recoveryActions.gracefulDegradation(context, error.message);
+      default:
+        return { action: 'none', success: false, message: `No recovery action for: ${error.message}` };
+    }
+  }
+
+  logError(error: Error, context: string): void {
+    const category = this.categorizeError(error);
+    this.logger.error(category, error.message, context, {
+      errorName: error.name,
+      errorCode: (error as { code?: string }).code,
+      category,
+    });
+  }
 }
