@@ -136,24 +136,32 @@ struct SmallWidgetView: View {
     }
 
     private func formattedResetTime(_ date: Date) -> String {
-        let now = Date()
-        let interval = date.timeIntervalSince(now)
+        formatResetTime(date)
+    }
+}
 
-        if interval <= 0 {
-            return "soon"
-        }
+// MARK: - Module-level Helpers
 
-        let hours = Int(interval) / 3600
-        let minutes = (Int(interval) % 3600) / 60
+/// Formats a reset time Date into a human-readable relative string.
+/// Exposed at module level for reuse by other widget views.
+func formatResetTime(_ date: Date) -> String {
+    let now = Date()
+    let interval = date.timeIntervalSince(now)
 
-        if hours > 24 {
-            let days = hours / 24
-            return "in \(days)d"
-        } else if hours > 0 {
-            return "in \(hours)h \(minutes)m"
-        } else {
-            return "in \(minutes)m"
-        }
+    if interval <= 0 {
+        return "soon"
+    }
+
+    let hours = Int(interval) / 3600
+    let minutes = (Int(interval) % 3600) / 60
+
+    if hours > 24 {
+        let days = hours / 24
+        return "in \(days)d"
+    } else if hours > 0 {
+        return "in \(hours)h \(minutes)m"
+    } else {
+        return "in \(minutes)m"
     }
 }
 
