@@ -1,4 +1,4 @@
-import { UsageData, SyncStatus, SyncError } from '../types/sync';
+import { UsageData, SyncStatusEnum, SyncError } from '../types/sync';
 import { FetchResult, FetcherType } from '../types/fetcher';
 import { LaunchAgentConfig } from '../types/daemon';
 import { CloudSyncManager } from './CloudSyncManager';
@@ -69,7 +69,7 @@ export class MacFetchService {
   async retrySyncWithBackoff(
     data: UsageData,
     maxAttempts: number = DEFAULT_RETRY_ATTEMPTS
-  ): Promise<SyncStatus> {
+  ): Promise<SyncStatusEnum> {
     let lastError: Error | undefined;
 
     for (let attempt = 0; attempt < maxAttempts; attempt++) {

@@ -1,7 +1,7 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { MacFetchService, UsageFetcher, FetchResult } from '../../services/MacFetchService';
 import { CloudSyncManager, ICloudStore } from '../../services/CloudSyncManager';
-import { UsageData, SyncStatus, SyncError } from '../../types/sync';
+import { UsageData, SyncStatusEnum, SyncError } from '../../types/sync';
 
 function createMockStore(overrides: Partial<ICloudStore> = {}): ICloudStore {
   return {
@@ -131,7 +131,7 @@ describe('MacFetchService', () => {
     it('returns SUCCESS on first successful attempt', async () => {
       const status = await service.retrySyncWithBackoff(createUsageData());
 
-      expect(status).toBe(SyncStatus.SUCCESS);
+      expect(status).toBe(SyncStatusEnum.SUCCESS);
       expect(store.set).toHaveBeenCalledTimes(1);
     });
 
@@ -158,13 +158,13 @@ describe('MacFetchService', () => {
         .mockRejectedValueOnce(
           new SyncError('Temporary', 'WRITE_FAILED', 'write', true)
         )
-        .mockResolvedValueOnce(SyncStatus.SUCCESS);
+        .mockResolvedValueOnce(SyncStatusEnum.SUCCESS);
 
       vi.spyOn(service as any, 'sleep').mockResolvedValue(undefined);
 
       const status = await service.retrySyncWithBackoff(createUsageData());
 
-      expect(status).toBe(SyncStatus.SUCCESS);
+      expect(status).toBe(SyncStatusEnum.SUCCESS);
       expect(writeSpy).toHaveBeenCalledTimes(2);
     });
 

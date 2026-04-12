@@ -1,6 +1,6 @@
 import {
   UsageData,
-  SyncStatus,
+  SyncStatusEnum,
   SyncError,
 } from '../types/sync';
 import { ManualOverride } from '../types/override';
@@ -38,7 +38,7 @@ export class ManualOverrideService {
     this.syncManager = syncManager;
   }
 
-  async saveManualOverride(override: ManualOverride): Promise<SyncStatus> {
+  async saveManualOverride(override: ManualOverride): Promise<SyncStatusEnum> {
     if (isOverrideExpired(override)) {
       throw new SyncError(
         'Cannot save an expired override',

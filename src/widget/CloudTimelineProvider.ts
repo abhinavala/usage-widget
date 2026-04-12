@@ -6,11 +6,11 @@ import {
 } from '../types/sync';
 import {
   WidgetSize,
-  WidgetConfiguration,
+  TimelineWidgetConfiguration,
   TimelineEntry,
 } from '../types/widget';
 
-export { WidgetSize, WidgetConfiguration, TimelineEntry };
+export { WidgetSize, TimelineWidgetConfiguration, TimelineEntry };
 
 export interface Timeline<T> {
   entries: T[];
@@ -68,7 +68,7 @@ export class CloudTimelineProvider {
 
   generateTimelineEntries(
     usageData: UsageData,
-    configuration: WidgetConfiguration
+    configuration: TimelineWidgetConfiguration
   ): TimelineEntry[] {
     const now = new Date();
     const entries: TimelineEntry[] = [];
@@ -84,7 +84,7 @@ export class CloudTimelineProvider {
     return entries;
   }
 
-  async getTimeline(configuration: WidgetConfiguration): Promise<Timeline<TimelineEntry>> {
+  async getTimeline(configuration: TimelineWidgetConfiguration): Promise<Timeline<TimelineEntry>> {
     const usageData = await this.getUsageDataWithFallback();
 
     if (!usageData) {

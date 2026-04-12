@@ -2,7 +2,7 @@ import { describe, it, expect, beforeEach, vi } from 'vitest';
 import {
   CloudTimelineProvider,
   WidgetSize,
-  WidgetConfiguration,
+  TimelineWidgetConfiguration,
   LocalDataSource,
 } from '../../widget/CloudTimelineProvider';
 import { CloudSyncManager, ICloudStore } from '../../services/CloudSyncManager';
@@ -36,7 +36,7 @@ function createMockLocalDataSource(data: UsageData | null = null): LocalDataSour
   };
 }
 
-function createSmallConfig(): WidgetConfiguration {
+function createSmallConfig(): TimelineWidgetConfiguration {
   return {
     showTokens: true,
     showRequests: true,
@@ -45,7 +45,7 @@ function createSmallConfig(): WidgetConfiguration {
   };
 }
 
-function createMediumConfig(): WidgetConfiguration {
+function createMediumConfig(): TimelineWidgetConfiguration {
   return {
     showTokens: true,
     showRequests: true,
