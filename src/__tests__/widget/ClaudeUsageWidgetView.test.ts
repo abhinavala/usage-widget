@@ -136,6 +136,16 @@ describe('ClaudeUsageWidgetView', () => {
       'utf-8'
     );
 
+    it('exports WidgetEntry interface', () => {
+      expect(widgetTypesContent).toContain('export interface WidgetEntry');
+    });
+
+    it('WidgetEntry has date, usageData, and configuration fields', () => {
+      expect(widgetTypesContent).toContain('date: Date');
+      expect(widgetTypesContent).toContain('usageData: UsageData | null');
+      expect(widgetTypesContent).toContain('configuration: WidgetConfiguration');
+    });
+
     it('exports WidgetSize enum', () => {
       expect(widgetTypesContent).toContain('export enum WidgetSize');
     });
