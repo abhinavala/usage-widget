@@ -1,20 +1,9 @@
 import { UsageData, SyncStatus, SyncError } from '../types/sync';
+import { FetchResult, FetcherType } from '../types/fetcher';
+import { LaunchAgentConfig } from '../types/daemon';
 import { CloudSyncManager } from './CloudSyncManager';
 
-export type FetcherType = 'webapi' | 'cli';
-
-export interface FetchResult {
-  data: UsageData;
-  success: boolean;
-  error?: string;
-  source: FetcherType;
-}
-
-export interface LaunchAgentConfig {
-  keepAlive: boolean;
-  fetchInterval: number;
-  isUIElement: boolean;
-}
+export type { FetchResult, FetcherType, LaunchAgentConfig };
 
 export interface UsageFetcher {
   fetch(): Promise<UsageData>;
