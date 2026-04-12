@@ -269,6 +269,34 @@ describe('WebApiFetcher', () => {
     });
   });
 
+  describe('authenticateRequest', () => {
+    it('adds authentication headers to an existing request', async () => {
+      const inputHeaders = { 'X-Custom': 'value' };
+      const result = await fetcher.authenticateRequest(inputHeaders);
+
+      expect(result['X-Custom']).toBe('value');
+      expect(result['Cookie']).toBe('session=abc123');
+      expect(result['Authorization']).toBe('Bearer tok_test');
+      expect(result['Accept']).toBe('application/json');
+    });
+
+    it('throws SessionExpiredError when no valid session exists', async () => {
+      setKeychainBinding(createMockKeychainBinding(null));
+      keychainManager = new KeychainManager();
+      fetcher = new WebApiFetcher(keychainManager, authManager, {
+        baseUrl: 'https://claude.ai',
+        timeoutMs: 5000,
+      });
+
+      await expect(fetcher.authenticateRequest({})).rejects.toThrow(
+        SessionExpiredError
+      );
+      await expect(fetcher.authenticateRequest({})).rejects.toThrow(
+        'No valid session available for request authentication'
+      );
+    });
+  });
+
   describe('type', () => {
     it('returns webapi as the fetcher type', () => {
       expect(fetcher.type).toBe('webapi');

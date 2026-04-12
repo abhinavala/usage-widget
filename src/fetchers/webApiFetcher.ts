@@ -74,6 +74,20 @@ export class WebApiFetcher implements UsageFetcher {
     return !valid;
   }
 
+  async authenticateRequest(
+    headers: Record<string, string>
+  ): Promise<Record<string, string>> {
+    const session = await this.getValidSession();
+    if (!session) {
+      throw new SessionExpiredError('No valid session available for request authentication');
+    }
+
+    const loginSession = this.parseLoginSession(session);
+    const authHeaders = this.buildHeaders(loginSession);
+
+    return { ...headers, ...authHeaders };
+  }
+
   private async getValidSession(): Promise<StoredSession | null> {
     const isValid = await this.keychainManager.isSessionValid();
     if (!isValid) return null;
