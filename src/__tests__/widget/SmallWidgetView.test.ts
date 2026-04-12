@@ -1,45 +1,7 @@
 import { describe, it, expect } from 'vitest';
-
-// TypeScript mirror types matching the Swift implementation
-// These mirror the Swift types from ClaudeUsageWidget.swift and UsageData.swift
-
-interface UsageData {
-  tokensUsed: number;
-  tokensLimit: number;
-  requestsUsed: number;
-  requestsLimit: number;
-  resetTime: string;
-  lastUpdated: string;
-}
-
-interface ProgressBarConfiguration {
-  lowThreshold: number;
-  mediumThreshold: number;
-  highThreshold: number;
-  colors: ProgressColors;
-}
-
-interface ProgressColors {
-  low: string;
-  medium: string;
-  high: string;
-  background: string;
-}
-
-enum WidgetSize {
-  Small = 'small',
-  Medium = 'medium',
-}
-
-interface WidgetConfiguration {
-  size: WidgetSize;
-}
-
-interface WidgetEntry {
-  date: Date;
-  usageData: UsageData | null;
-  configuration: WidgetConfiguration;
-}
+import { UsageData } from '../../types/usage';
+import { ProgressBarConfiguration, ProgressColors } from '../../types/ui';
+import { WidgetSize, WidgetConfiguration, WidgetEntry } from '../../types/widget';
 
 type UsageType = 'tokens' | 'requests';
 

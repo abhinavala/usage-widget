@@ -7,5 +7,5 @@
     "strict": true,
     "skipLibCheck": true
   },
-  "include": ["ClaudeUsageApp/Tests/**/*.ts"]
+  "include": ["ClaudeUsageApp/Tests/**/*.ts", "src/**/*.ts"]
 }
