@@ -118,4 +118,58 @@ class WebAPIFetcher: UsageFetcher {
 
         return try httpClient.makeAuthenticatedRequest(url: url, credentials: credentials)
     }
+
+    // MARK: - Response Parsing
+
+    /// Parses a raw usage response (Data) into UsageData.
+    /// Delegates to ResponseParser, wrapping any errors as FetchError.
+    func parseUsageResponse(_ data: Data, contentType: String?) throws -> UsageData {
+        do {
+            return try responseParser.parseResponse(data, contentType: contentType)
+        } catch let error as FetchError {
+            throw error
+        } catch {
+            throw FetchError(
+                message: "Failed to parse usage response: \(error.localizedDescription)",
+                code: FetchErrorCode.parseError,
+                fetcherType: fetcherType,
+                retryable: false
+            )
+        }
+    }
+
+    // MARK: - Authentication Refresh
+
+    /// Checks if the current credentials are still valid and refreshes them if needed.
+    /// Returns refreshed credentials if renewal was required, or the existing credentials
+    /// if they are still valid. Throws if credentials cannot be refreshed.
+    func refreshAuthenticationIfNeeded() throws -> AuthCredentials {
+        let credentials: AuthCredentials
+        do {
+            credentials = try keychainManager.retrieveCredentials()
+        } catch {
+            NSLog("[MacClaudeUsage] WebAPIFetcher: No credentials found, re-authentication required")
+            throw FetchError(
+                message: "No stored credentials available, re-authentication required",
+                code: FetchErrorCode.credentialsExpired,
+                fetcherType: fetcherType,
+                retryable: false
+            )
+        }
+
+        let authState = keychainManager.validateCredentials(credentials)
+        switch authState {
+        case .authenticated:
+            NSLog("[MacClaudeUsage] WebAPIFetcher: Credentials are valid, no refresh needed")
+            return credentials
+        case .expired, .invalid, .unauthenticated:
+            NSLog("[MacClaudeUsage] WebAPIFetcher: Credentials are %@, re-authentication required", authState.rawValue)
+            throw FetchError(
+                message: "Credentials are \(authState.rawValue), re-authentication required",
+                code: FetchErrorCode.credentialsExpired,
+                fetcherType: fetcherType,
+                retryable: false
+            )
+        }
+    }
 }

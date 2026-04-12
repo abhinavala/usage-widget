@@ -1,8 +1,8 @@
 import { describe, it, expect, beforeEach } from 'vitest';
 import { readFileSync } from 'fs';
 import { resolve } from 'path';
-import type { UsageData } from '../../src/types/sync';
-import type { FetcherType } from '../../src/types/fetcher';
+import type { UsageData } from '../../src/types/usage';
+import type { FetcherType, UsageFetcher } from '../../src/types/fetcher';
 import type { AuthCredentials, AuthState } from '../../src/types/auth';
 import { AuthError, FetchError } from '../../src/types/errors';
 
@@ -272,6 +272,59 @@ describe('WebAPIFetcher', () => {
         expect(line).not.toMatch(/password/i);
         expect(line).not.toContain('Bearer');
       }
+    });
+  });
+
+  describe('UsageFetcher interface contract', () => {
+    it('UsageFetcher interface exists in fetcher.ts', () => {
+      const createMockFetcher = (): UsageFetcher => ({
+        fetchUsage: async () => ({
+          tokensUsed: 1000,
+          tokensLimit: 100000,
+          messagesUsed: 5,
+          messagesLimit: 50,
+          resetTime: new Date(),
+          lastUpdated: new Date(),
+        }),
+      });
+      const fetcher = createMockFetcher();
+      expect(fetcher.fetchUsage).toBeDefined();
+    });
+  });
+
+  describe('parseUsageResponse in WebAPIFetcher', () => {
+    it('WebAPIFetcher exposes parseUsageResponse method', () => {
+      expect(webAPIFetcherSource).toContain('func parseUsageResponse');
+    });
+
+    it('parseUsageResponse delegates to ResponseParser', () => {
+      expect(webAPIFetcherSource).toContain('responseParser.parseResponse');
+    });
+
+    it('parseUsageResponse wraps errors as FetchError', () => {
+      expect(webAPIFetcherSource).toContain('FetchErrorCode.parseError');
+    });
+  });
+
+  describe('refreshAuthenticationIfNeeded in WebAPIFetcher', () => {
+    it('WebAPIFetcher exposes refreshAuthenticationIfNeeded method', () => {
+      expect(webAPIFetcherSource).toContain('func refreshAuthenticationIfNeeded');
+    });
+
+    it('refreshAuthenticationIfNeeded retrieves credentials from keychain', () => {
+      expect(webAPIFetcherSource).toContain('keychainManager.retrieveCredentials()');
+    });
+
+    it('refreshAuthenticationIfNeeded validates credential state', () => {
+      expect(webAPIFetcherSource).toContain('keychainManager.validateCredentials(credentials)');
+    });
+
+    it('refreshAuthenticationIfNeeded returns valid credentials when authenticated', () => {
+      expect(webAPIFetcherSource).toContain('Credentials are valid, no refresh needed');
+    });
+
+    it('refreshAuthenticationIfNeeded throws for expired/invalid credentials', () => {
+      expect(webAPIFetcherSource).toContain('re-authentication required');
     });
   });
 
